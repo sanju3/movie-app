@@ -73,5 +73,6 @@ const styles = StyleSheet.create({
   },
   container: {
     marginHorizontal: 10,
+    marginBottom: 10,
   },
 });
