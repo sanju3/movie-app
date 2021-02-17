@@ -1,21 +1,23 @@
-import 'react-native-gesture-handler';
-import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import Main from './screens/Main';
-import Details from './screens/Details';
+import React, {Component} from 'react';
+import CustomRouter from './routers/CustomRouter';
+import {Provider} from 'react-redux';
+import configureStore from './store';
 
-const Stack = createStackNavigator();
+const store = configureStore();
 
-export default class App extends React.Component {
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   render() {
     return (
-      <NavigationContainer>
-        <Stack.Navigator headerMode={'none'} initialRouteName="Main">
-          <Stack.Screen name="Main" component={Main} />
-          <Stack.Screen name="Details" component={Details} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <Provider store={store}>
+        <CustomRouter />
+      </Provider>
     );
   }
 }
+
+export default App;

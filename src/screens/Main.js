@@ -1,62 +1,28 @@
 import React, {Component} from 'react';
-import {ActivityIndicator} from 'react-native';
-import {View, Text, StyleSheet} from 'react-native';
-import {getData} from '../API';
+import {View, StyleSheet, ScrollView} from 'react-native';
 import Header from '../components/Header';
-import CustomCard from '../components/CustomCard';
-import {ScrollView} from 'react-native';
 import ErrorMessage from '../components/ErrorMessage';
+import MainData from './Main/MainData';
+import {connect} from 'react-redux';
+import {getDataFromAPI} from '../actions/mainActions';
+import Loader from '../components/Loader/Loader';
 
 class Main extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      movies: [],
-      loading: true,
-      error: {
-        errorStatus: false,
-        errorMessage: '',
-      },
-    };
-  }
-
-  async componentDidMount() {
-    try {
-      const data = await getData();
-      console.log(data[0].multimedia.src);
-      this.setState({
-        movies: data,
-        loading: false,
-      });
-    } catch (error) {
-      this.setState({
-        error: {
-          errorStatus: true,
-          errorMessage: error.message,
-        },
-        loading: false,
-      });
-    }
+  componentDidMount() {
+    this.props.fetchData();
   }
   render() {
     return (
       <View style={styles.root}>
         <Header name="MAIN" />
         <View style={styles.container}>
+          {this.props.loading ? <Loader /> : null}
           <ScrollView>
-            {this.state.loading ? (
-              <ActivityIndicator size="large" color="orange" />
-            ) : this.state.error.errorStatus ? (
-              <ErrorMessage error={this.state.error.errorMessage} />
-            ) : (
-              this.state.movies.map(movie => (
-                <CustomCard
-                  key={movie.display_title}
-                  movie={movie}
-                  navigation={this.props.navigation}
-                />
-              ))
-            )}
+            {this.props.error ? (
+              <ErrorMessage error={this.props.error} />
+            ) : null}
+
+            {this.props.data ? <MainData movies={this.props.data} /> : null}
           </ScrollView>
         </View>
       </View>
@@ -64,15 +30,30 @@ class Main extends Component {
   }
 }
 
-export default Main;
+const mapStateToProps = state => {
+  return {
+    loading: state.main.loading,
+    data: state.main.data,
+    error: state.main.error,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchData: async () => await dispatch(getDataFromAPI()),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: '#fff',
+    alignItems: 'center',
   },
   container: {
-    marginHorizontal: 10,
+    marginHorizontal: 35,
     marginBottom: 30,
+    justifyContent: 'center',
   },
 });

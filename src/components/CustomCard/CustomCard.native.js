@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {Card} from 'react-native-elements';
-
-import {Text, Button} from 'react-native';
-import {Image, StyleSheet} from 'react-native';
+import {Link} from 'react-router-native';
+import {Text, StyleSheet, View} from 'react-native';
 
 class CustomCard extends Component {
   constructor(props) {
@@ -12,10 +11,6 @@ class CustomCard extends Component {
     };
   }
 
-  moreDeatailsHandler = () => {
-    this.props.navigation.navigate('Details', {movie: this.state.movie});
-  };
-
   render() {
     return (
       <Card>
@@ -23,7 +18,15 @@ class CustomCard extends Component {
         <Card.Divider />
         <Card.Image source={{uri: this.state.movie.multimedia.src}} />
         <Text style={{marginBottom: 10}}>{this.state.movie.headline}</Text>
-        <Button title="MORE DETAILS" onPress={this.moreDeatailsHandler} />
+        <View style={styles.button}>
+          <Link
+            to={{
+              pathname: '/details',
+              state: {movie: this.state.movie},
+            }}>
+            <Text>More Details</Text>
+          </Link>
+        </View>
       </Card>
     );
   }
@@ -35,5 +38,12 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 100,
+  },
+  button: {
+    padding: 10,
+    backgroundColor: '#b1b1b3',
+    borderRadius: 5,
+    width: '100%',
+    alignItems: 'center',
   },
 });
