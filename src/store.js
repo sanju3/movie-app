@@ -1,10 +1,10 @@
 import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
-import {getDataReducer} from './reducers/mainReducers';
+import {movieReviewReducer} from './reducers/mainReducers';
 import thunk from 'redux-thunk';
 const initialState = {};
 
 const rootReducer = combineReducers({
-  main: getDataReducer,
+  main: movieReviewReducer,
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

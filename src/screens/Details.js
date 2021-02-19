@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import Header from '../components/Header';
 import DetailsData from './Details/DetailsData';
 
@@ -14,14 +14,14 @@ class Details extends Component {
 
   render() {
     return (
-      <ScrollView>
-        <View style={styles.root}>
+      <View style={styles.root}>
+        <View style={styles.header}>
           <Header name="DETAILS" />
-          <View style={styles.container}>
-            <DetailsData movie={this.state.movie} />
-          </View>
         </View>
-      </ScrollView>
+        <View style={styles.container}>
+          <DetailsData movie={this.state.movie} history={this.props.history} />
+        </View>
+      </View>
     );
   }
 }
@@ -33,7 +33,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  header: {
+    height: 40,
+  },
   container: {
+    height: '100%',
     margin: 10,
   },
 });

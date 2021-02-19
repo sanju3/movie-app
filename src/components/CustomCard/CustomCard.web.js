@@ -1,39 +1,42 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, Image, Text} from 'react-native';
-import {Link} from 'react-router-dom';
+import {View, StyleSheet, Image, Text, TouchableOpacity} from 'react-native';
 
 class CustomCard extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      movie: props.movie,
-    };
-  }
-
   render() {
     return (
       <View style={styles.root}>
         <View style={styles.container}>
           <View style={styles.title}>
-            <Text>{this.state.movie.display_title}</Text>
+            <Text>{this.props.movie.display_title}</Text>
           </View>
           <View style={styles.image}>
             <Image
-              source={{uri: this.state.movie.multimedia.src}}
+              source={{uri: this.props.movie.multimedia.src}}
               style={styles.imageDim}
             />
           </View>
           <View style={styles.body}>
-            <Text>{this.state.movie.headline}</Text>
+            <Text>{this.props.movie.headline}</Text>
           </View>
-          <View style={styles.button}>
-            <Link
-              to={{
-                pathname: '/details',
-                state: {movie: this.state.movie},
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.primaryButton}
+              onPress={() =>
+                this.props.history.push({
+                  pathname: '/details',
+                  state: {movie: this.props.movie},
+                })
+              }>
+              <Text style={styles.text}>Details</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.dangerButton}
+              onPress={() => {
+                this.props.delete(this.props.movie.display_title);
               }}>
-              <Text style={styles.link}>More Details</Text>
-            </Link>
+              <Text style={styles.text}>Delete</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -66,18 +69,33 @@ const styles = StyleSheet.create({
   },
   body: {
     marginBottom: 15,
-    height: 70,
+    height: 60,
   },
   imageDim: {
     width: '100%',
     height: 100,
   },
-  button: {
+  dangerButton: {
+    backgroundColor: '#d95950',
     padding: 10,
-    backgroundColor: '#b1b1b3',
     borderRadius: 5,
-    width: '100%',
+    width: '49%',
     alignItems: 'center',
+  },
+  primaryButton: {
+    backgroundColor: '#419cd1',
+    padding: 10,
+    borderRadius: 5,
+    width: '49%',
+    alignItems: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+  },
+  text: {
+    color: 'white',
   },
   link: {textDecoration: 'none'},
 });

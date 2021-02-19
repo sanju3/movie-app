@@ -1,23 +1,20 @@
 import React, {Component} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
-import CustomCardComponent from '../../components/CustomCard/CustomCardComponent';
+import CustomCard from '../../components/CustomCard/CustomCard';
 
 class MainData extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      movies: props.movies,
-    };
-  }
-
   render() {
     return (
       <View style={styles.root}>
         <View style={styles.container}>
           <ScrollView>
-            {this.state.movies.map(movie => (
-              <CustomCardComponent key={movie.display_title} movie={movie} />
+            {this.props.movies.map(movie => (
+              <CustomCard
+                key={movie.display_title}
+                movie={movie}
+                history={this.props.history}
+                delete={this.props.delete}
+              />
             ))}
           </ScrollView>
         </View>
@@ -34,7 +31,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   container: {
-    marginHorizontal: 10,
     marginBottom: 30,
     alignItems: 'center',
   },

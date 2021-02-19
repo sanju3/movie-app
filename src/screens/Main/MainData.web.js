@@ -1,22 +1,19 @@
 import React, {Component} from 'react';
 import {View, StyleSheet} from 'react-native';
-import CustomCardComponent from '../../components/CustomCard/CustomCardComponent';
+import CustomCard from '../../components/CustomCard/CustomCard';
 
 class MainData extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      movies: props.movies,
-    };
-  }
-
   render() {
     return (
       <View style={styles.root}>
         <View style={styles.container}>
-          {this.state.movies.map(movie => (
+          {this.props.movies.map(movie => (
             <View style={styles.seporator} key={movie.display_title}>
-              <CustomCardComponent movie={movie} />
+              <CustomCard
+                movie={movie}
+                history={this.props.history}
+                delete={this.props.delete}
+              />
             </View>
           ))}
         </View>
@@ -32,6 +29,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
+    marginLeft: 35,
   },
 
   container: {

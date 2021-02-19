@@ -13,3 +13,24 @@ export const getDataFromAPI = () => async dispatch => {
     });
   }
 };
+
+export const createReview = review => {
+  return {
+    type: types.CREATE_REVIEW,
+    payload: review,
+  };
+};
+
+export const updateReview = review => {
+  return {
+    type: types.UPDATE_REVIEW,
+    payload: review,
+  };
+};
+
+export const deleteReview = name => {
+  return {
+    type: types.DELETE_REVIEW,
+    payload: name,
+  };
+};

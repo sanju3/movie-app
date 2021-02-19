@@ -2,13 +2,16 @@ import React, {Component} from 'react';
 import {
   View,
   StyleSheet,
-  TouchableOpacity,
   Text,
+  Button,
   Image,
   TextInput,
+  TouchableOpacity,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {updateReview} from '../../actions/mainActions';
+import CustomDialog from '../../components/CustomDialog';
+import {captureImage, chooseImage} from '../../utils';
 
 class DetailsData extends Component {
   constructor(props) {
@@ -16,19 +19,9 @@ class DetailsData extends Component {
     this.state = {
       movie: props.movie,
       updateStatus: false,
-      image: '',
+      dialogStatus: false,
     };
   }
-
-  onFileChange = file => {
-    this.setState({
-      movie: {
-        ...this.state.movie,
-        multimedia: {src: URL.createObjectURL(file.target.files[0])},
-      },
-      image: URL.createObjectURL(file.target.files[0]),
-    });
-  };
 
   changeSummaryTextHandler = text => {
     this.setState({
@@ -43,6 +36,23 @@ class DetailsData extends Component {
   changePublicationTextHandler = text => {
     this.setState({
       movie: {...this.state.movie, publication_date: text},
+    });
+  };
+  changeImageHandler = () => {
+    this.setState({dialogStatus: true});
+  };
+
+  captureImageData = response => {
+    this.setState({
+      movie: {...this.state.movie, multimedia: {src: response.uri}},
+      dialogStatus: false,
+    });
+  };
+
+  chooseImageData = response => {
+    this.setState({
+      movie: {...this.state.movie, multimedia: {src: response.uri}},
+      dialogStatus: false,
     });
   };
 
@@ -65,29 +75,51 @@ class DetailsData extends Component {
       this.props.history.push('/');
     }
   };
-
   render() {
     return (
       <View style={styles.root}>
+        {this.state.dialogStatus ? (
+          <CustomDialog
+            title="Edit image"
+            description="Choose your preffered method"
+            operations={[
+              {
+                method: captureImage,
+                operation: this.captureImageData,
+                data: 'photo',
+                label: 'Camera',
+              },
+              {
+                method: chooseImage,
+                operation: this.chooseImageData,
+                data: 'photo',
+                label: 'Gallery',
+              },
+            ]}
+            visibility={() =>
+              this.setState({dialogStatus: !this.state.dialogStatus})
+            }
+            isVisible={this.state.dialogStatus}
+          />
+        ) : null}
         <View style={styles.container}>
           <View style={styles.title}>
             <Text>{this.props.movie.display_title}</Text>
           </View>
-          <View style={styles.image}>
-            {!this.state.image || !this.state.updateStatus ? (
+          <View style={styles.imageContainer}>
+            {!this.state.updateStatus ? (
               <Image
+                style={styles.image}
                 source={{uri: this.props.movie.multimedia.src}}
-                style={styles.imageDim}
               />
             ) : (
-              <Image
-                source={{uri: this.state.movie.multimedia.src}}
-                style={styles.imageDim}
-              />
+              <TouchableOpacity onPress={() => this.changeImageHandler()}>
+                <Image
+                  style={styles.image}
+                  source={{uri: this.state.movie.multimedia.src}}
+                />
+              </TouchableOpacity>
             )}
-            {this.state.updateStatus ? (
-              <input type="file" onChange={this.onFileChange} />
-            ) : null}
           </View>
           <View style={styles.summary}>
             {!this.state.updateStatus ? (
@@ -95,7 +127,6 @@ class DetailsData extends Component {
             ) : (
               <TextInput
                 multiline={true}
-                numberOfLines={3}
                 style={styles.input}
                 value={this.state.movie.summary_short}
                 onChangeText={this.changeSummaryTextHandler}
@@ -113,7 +144,7 @@ class DetailsData extends Component {
               />
             )}
           </View>
-          <View style={styles.date}>
+          <View style={styles.publicationDate}>
             {!this.state.updateStatus ? (
               <Text>
                 {'Publication Date: ' + this.props.movie.publication_date}
@@ -126,7 +157,7 @@ class DetailsData extends Component {
               />
             )}
           </View>
-          <View style={styles.buttonContainer}>
+          <View style={styles.buttons}>
             <TouchableOpacity
               style={styles.primaryButton}
               onPress={() => this.props.history.push('/')}>
@@ -147,7 +178,7 @@ class DetailsData extends Component {
                 this.setState({updateStatus: !this.state.updateStatus})
               }>
               <Text style={styles.text}>
-                {!this.state.updateStatus ? 'Edit' : 'Cancell edit'}
+                {!this.state.updateStatus ? 'Edit details' : 'Cancel edit'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -167,32 +198,11 @@ export default connect(null, mapDispatchToProps)(DetailsData);
 
 const styles = StyleSheet.create({
   root: {
-    flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
   },
   container: {
     margin: 10,
-    width: '40%',
-    height: '40%',
-    alignItems: 'center',
-    backgroundColor: 'grey',
-    padding: 20,
-    borderRadius: 20,
-  },
-  title: {
-    marginBottom: 30,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  imageDim: {
-    width: 400,
-    height: 250,
-    marginBottom: 5,
+    height: 700,
   },
   primaryButton: {
     backgroundColor: '#419cd1',
@@ -201,30 +211,40 @@ const styles = StyleSheet.create({
     width: '30%',
     alignItems: 'center',
   },
-  buttonContainer: {
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+  title: {
+    paddingVertical: 10,
+    alignItems: 'center',
+    width: '100%',
+  },
+  input: {
+    width: '100%',
+    borderColor: 'grey',
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  imageContainer: {
+    height: '30%',
+    marginBottom: 10,
+  },
+  summary: {
+    marginBottom: 10,
+  },
+  byline: {
+    marginBottom: 10,
+  },
+  publicationDate: {
+    marginBottom: 10,
+  },
+  buttons: {
     flexDirection: 'row',
     width: '90%',
     justifyContent: 'flex-start',
   },
   text: {
     color: 'white',
-  },
-  summary: {
-    width: '90%',
-    marginBottom: 5,
-  },
-  byline: {
-    width: '90%',
-    marginBottom: 5,
-  },
-  date: {
-    width: '90%',
-    marginBottom: 5,
-  },
-  input: {
-    backgroundColor: 'white',
-    padding: 5,
-    borderRadius: 5,
-    flex: 1,
   },
 });
