@@ -42,7 +42,7 @@ export default CustomCard;
 
 const styles = StyleSheet.create({
   image: {
-    width: 335,
+    width: '100%',
     height: 150,
   },
   buttonContainer: {
