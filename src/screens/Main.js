@@ -8,11 +8,31 @@ import {deleteReview, getDataFromAPI} from '../actions/mainActions';
 import Loader from '../components/Loader/Loader';
 
 class Main extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [],
+    };
+  }
+
   componentDidMount() {
     if (!this.props.data) {
       this.props.fetchData();
+    } else if (
+      JSON.stringify(this.props.data) !== JSON.stringify(this.state.data)
+    ) {
+      this.setState({data: this.props.data});
     }
   }
+
+  componentDidUpdate(previousProps) {
+    if (
+      JSON.stringify(previousProps.data) !== JSON.stringify(this.props.data)
+    ) {
+      this.setState({data: this.props.data});
+    }
+  }
+
   render() {
     return (
       <View style={styles.root}>
@@ -24,14 +44,14 @@ class Main extends Component {
               <ErrorMessage error={this.props.error} />
             ) : null}
 
-            {this.props.data ? (
+            {this.state.data.length !== 0 ? (
               <View>
                 <Button
                   onPress={() => this.props.history.push('/add')}
                   title="Add new review"
                 />
                 <MainData
-                  movies={this.props.data}
+                  movies={this.state.data}
                   history={this.props.history}
                   delete={this.props.deleteReview}
                 />

@@ -97,5 +97,4 @@ const styles = StyleSheet.create({
   text: {
     color: 'white',
   },
-  link: {textDecoration: 'none'},
 });

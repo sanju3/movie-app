@@ -7,6 +7,7 @@ import {
   Image,
   TextInput,
 } from 'react-native';
+import Toast from 'light-toast';
 import {connect} from 'react-redux';
 import {updateReview} from '../../actions/mainActions';
 
@@ -48,7 +49,8 @@ class DetailsData extends Component {
 
   updateReviewHandler = () => {
     if (JSON.stringify(this.state.movie) === JSON.stringify(this.props.movie)) {
-      alert('Nothing to change');
+      //alert('Nothing to change'); // eslint-disable-line no-alert
+      Toast.info('Nothing to change', 3000);
     } else {
       this.props.updateMovie({
         movieName: this.props.movie.display_title,
@@ -58,7 +60,8 @@ class DetailsData extends Component {
         movieByline: this.state.movie.byline,
         moviePublicationDate: this.state.movie.publication_date,
       });
-      alert('Review updated');
+      //alert('Review updated'); // eslint-disable-line no-alert
+      Toast.success('Review updated', 3000);
       this.setState({
         updateStatus: false,
       });

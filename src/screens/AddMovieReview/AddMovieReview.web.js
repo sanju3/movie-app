@@ -49,9 +49,9 @@ export class AddMovieReview extends Component {
         this.state.moviePublicationDate
       )
     ) {
-      alert('Fill all the Fields');
+      alert('Fill all the Fields'); // eslint-disable-line no-alert
     } else if (!this.state.imagePath) {
-      alert('Please insert an image');
+      alert('Please insert an image'); // eslint-disable-line no-alert
     } else {
       this.props.insertMovie({
         movieName: this.state.movieName,
@@ -61,7 +61,7 @@ export class AddMovieReview extends Component {
         moviePublicationDate: this.state.moviePublicationDate,
         movieHeadline: this.state.movieHeadline,
       });
-      alert('Review added');
+      alert('Review added'); // eslint-disable-line no-alert
       this.props.history.push('/');
     }
   };
