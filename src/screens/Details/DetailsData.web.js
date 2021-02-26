@@ -1,21 +1,15 @@
 import React, {Component} from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  Image,
-  TextInput,
-} from 'react-native';
+import {View, TouchableOpacity, Text, Image, TextInput} from 'react-native';
 import Toast from 'light-toast';
 import {connect} from 'react-redux';
 import {updateReview} from '../../actions/mainActions';
+import {stylesWeb} from './DetailsData.css';
 
 class DetailsData extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      movie: props.movie,
+      movieS: props.movie,
       updateStatus: false,
       image: '',
     };
@@ -23,8 +17,8 @@ class DetailsData extends Component {
 
   onFileChange = file => {
     this.setState({
-      movie: {
-        ...this.state.movie,
+      movieS: {
+        ...this.state.movieS,
         multimedia: {src: URL.createObjectURL(file.target.files[0])},
       },
       image: URL.createObjectURL(file.target.files[0]),
@@ -33,34 +27,36 @@ class DetailsData extends Component {
 
   changeSummaryTextHandler = text => {
     this.setState({
-      movie: {...this.state.movie, summary_short: text},
+      movieS: {...this.state.movieS, summary_short: text},
     });
   };
   changeBylineTextHandler = text => {
     this.setState({
-      movie: {...this.state.movie, byline: text},
+      movieS: {...this.state.movieS, byline: text},
     });
   };
   changePublicationTextHandler = text => {
     this.setState({
-      movie: {...this.state.movie, publication_date: text},
+      movieS: {...this.state.movieS, publication_date: text},
     });
   };
 
-  updateReviewHandler = () => {
-    if (JSON.stringify(this.state.movie) === JSON.stringify(this.props.movie)) {
+  updateReviewHandler = async () => {
+    if (
+      JSON.stringify(this.state.movieS) === JSON.stringify(this.props.movieS)
+    ) {
       //alert('Nothing to change'); // eslint-disable-line no-alert
       Toast.info('Nothing to change', 3000);
     } else {
+      const {movieS} = this.state;
       this.props.updateMovie({
         movieName: this.props.movie.display_title,
-        imagePath: this.state.movie.multimedia.src,
-        movieHeadline: this.state.movie.headline,
-        movieSummary: this.state.movie.summary_short,
-        movieByline: this.state.movie.byline,
-        moviePublicationDate: this.state.movie.publication_date,
+        imagePath: movieS.multimedia.src,
+        movieHeadline: movieS.headline,
+        movieSummary: movieS.summary_short,
+        movieByline: movieS.byline,
+        moviePublicationDate: movieS.publication_date,
       });
-      //alert('Review updated'); // eslint-disable-line no-alert
       Toast.success('Review updated', 3000);
       this.setState({
         updateStatus: false,
@@ -70,87 +66,84 @@ class DetailsData extends Component {
   };
 
   render() {
+    const {image, movieS, updateStatus} = this.state;
+    const {movie} = this.props;
+
     return (
-      <View style={styles.root}>
-        <View style={styles.container}>
-          <View style={styles.title}>
-            <Text>{this.props.movie.display_title}</Text>
+      <View style={stylesWeb.root}>
+        <View style={stylesWeb.container}>
+          <View style={stylesWeb.title}>
+            <Text>{movie.display_title}</Text>
           </View>
-          <View style={styles.image}>
-            {!this.state.image || !this.state.updateStatus ? (
+          <View style={stylesWeb.image}>
+            {!image || !updateStatus ? (
               <Image
-                source={{uri: this.props.movie.multimedia.src}}
-                style={styles.imageDim}
+                source={{uri: movie.multimedia.src}}
+                style={stylesWeb.imageDim}
               />
             ) : (
               <Image
-                source={{uri: this.state.movie.multimedia.src}}
-                style={styles.imageDim}
+                source={{uri: movieS.multimedia.src}}
+                style={stylesWeb.imageDim}
               />
             )}
-            {this.state.updateStatus ? (
-              <input type="file" onChange={this.onFileChange} />
-            ) : null}
+            {updateStatus && <input type="file" onChange={this.onFileChange} />}
           </View>
-          <View style={styles.summary}>
-            {!this.state.updateStatus ? (
-              <Text>{this.props.movie.summary_short}</Text>
+          <View style={stylesWeb.summary}>
+            {!updateStatus ? (
+              <Text>{movie.summary_short}</Text>
             ) : (
               <TextInput
                 multiline={true}
                 numberOfLines={3}
-                style={styles.input}
-                value={this.state.movie.summary_short}
+                style={stylesWeb.input}
+                value={movieS.summary_short}
                 onChangeText={this.changeSummaryTextHandler}
               />
             )}
           </View>
-          <View style={styles.byline}>
-            {!this.state.updateStatus ? (
-              <Text>{'By Line: ' + this.props.movie.byline}</Text>
+          <View style={stylesWeb.byline}>
+            {!updateStatus ? (
+              <Text>{'By Line: ' + movie.byline}</Text>
             ) : (
               <TextInput
-                style={styles.input}
-                value={this.state.movie.byline}
+                style={stylesWeb.input}
+                value={movieS.byline}
                 onChangeText={this.changeBylineTextHandler}
               />
             )}
           </View>
-          <View style={styles.date}>
-            {!this.state.updateStatus ? (
-              <Text>
-                {'Publication Date: ' + this.props.movie.publication_date}
-              </Text>
+          <View style={stylesWeb.date}>
+            {!updateStatus ? (
+              <Text>{'Publication Date: ' + movie.publication_date}</Text>
             ) : (
               <TextInput
-                style={styles.input}
-                value={this.state.movie.publication_date}
+                style={stylesWeb.input}
+                value={movieS.publication_date}
                 onChangeText={this.changePublicationTextHandler}
               />
             )}
           </View>
-          <View style={styles.buttonContainer}>
+          <View style={stylesWeb.buttonContainer}>
             <TouchableOpacity
-              style={styles.primaryButton}
+              style={stylesWeb.primaryButton}
               onPress={() => this.props.history.push('/')}>
-              <Text style={styles.text}>Home</Text>
+              <Text style={stylesWeb.text}>Home</Text>
             </TouchableOpacity>
             <Text> </Text>
-            {this.state.updateStatus ? (
+            {updateStatus && (
               <TouchableOpacity
-                style={styles.primaryButton}
+                style={stylesWeb.primaryButton}
                 onPress={() => this.updateReviewHandler()}>
-                <Text style={styles.text}>Update</Text>
+                <Text style={stylesWeb.text}>Update</Text>
               </TouchableOpacity>
-            ) : null}
+            )}
             <Text> </Text>
             <TouchableOpacity
-              style={styles.primaryButton}
-              onPress={() =>
-                this.setState({updateStatus: !this.state.updateStatus})
-              }>
-              <Text style={styles.text}>
-                {!this.state.updateStatus ? 'Edit' : 'Cancell edit'}
+              style={stylesWeb.primaryButton}
+              onPress={() => this.setState({updateStatus: !updateStatus})}>
+              <Text style={stylesWeb.text}>
+                {!updateStatus ? 'Edit' : 'Cancell edit'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -167,67 +160,3 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(null, mapDispatchToProps)(DetailsData);
-
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-  },
-  container: {
-    margin: 10,
-    width: '40%',
-    height: '40%',
-    alignItems: 'center',
-    backgroundColor: 'grey',
-    padding: 20,
-    borderRadius: 20,
-  },
-  title: {
-    marginBottom: 30,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  imageDim: {
-    width: 400,
-    height: 250,
-    marginBottom: 5,
-  },
-  primaryButton: {
-    backgroundColor: '#419cd1',
-    padding: 10,
-    borderRadius: 5,
-    width: '30%',
-    alignItems: 'center',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    width: '90%',
-    justifyContent: 'flex-start',
-  },
-  text: {
-    color: 'white',
-  },
-  summary: {
-    width: '90%',
-    marginBottom: 5,
-  },
-  byline: {
-    width: '90%',
-    marginBottom: 5,
-  },
-  date: {
-    width: '90%',
-    marginBottom: 5,
-  },
-  input: {
-    backgroundColor: 'white',
-    padding: 5,
-    borderRadius: 5,
-    flex: 1,
-  },
-});

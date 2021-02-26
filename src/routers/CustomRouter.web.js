@@ -1,22 +1,55 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Route, Switch, BrowserRouter, Redirect} from 'react-router-dom';
 import Main from '../screens/Main';
 import Details from '../screens/Details';
 import AddMovieReview from '../screens/AddMovieReview/AddMovieReview';
+import Login from '../screens/Login';
+import {useSelector} from 'react-redux';
+import Signup from '../screens/Signup';
+import {getDataLocal, storeData} from '../storage';
+import Start from '../screens/Start';
 
-class CustomRouter extends React.Component {
-  render() {
-    return (
-      <BrowserRouter>
-        <Switch>
-          <Route path={'/'} exact component={Main} />
-          <Route path={'/details'} exact component={Details} />
-          <Route path={'/add'} exact component={AddMovieReview} />
-          <Redirect to="/" />
-        </Switch>
-      </BrowserRouter>
-    );
-  }
-}
+const CustomRouter = () => {
+  const [isLogged, setIsLogged] = useState(false);
+  const [starting, setStarting] = useState(true);
+  const auth = useSelector(state => state.auth);
+  const {data} = auth;
+  useEffect(() => {
+    const syncWithLocal = async () => {
+      if (await getDataLocal('auth')) {
+        setIsLogged(true);
+      } else if (data) {
+        await storeData('auth', data);
+      }
+      setStarting(false);
+    };
+    syncWithLocal();
+  }, [data]);
+
+  return (
+    <BrowserRouter>
+      <Switch>
+        <Route
+          path={'/'}
+          exact
+          component={starting ? Start : data || isLogged ? Main : Login}
+        />
+        <Route path={'/login'} exact component={Login} />
+        <Route path={'/signup'} exact component={Signup} />
+        <Route
+          path={'/details'}
+          exact
+          component={data || isLogged ? Details : Login}
+        />
+        <Route
+          path={'/add'}
+          exact
+          component={data || isLogged ? AddMovieReview : Login}
+        />
+        <Redirect to="/login" />
+      </Switch>
+    </BrowserRouter>
+  );
+};
 
 export default CustomRouter;

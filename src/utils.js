@@ -54,13 +54,13 @@ export const captureImage = async (type, action) => {
     launchCamera(options, response => {
       if (response.didCancel) {
         return;
-      } else if (response.errorCode == 'camera_unavailable') {
+      } else if (response.errorCode === 'camera_unavailable') {
         alert('Camera not available on device');
         return;
-      } else if (response.errorCode == 'permission') {
+      } else if (response.errorCode === 'permission') {
         alert('Permission not satisfied');
         return;
-      } else if (response.errorCode == 'others') {
+      } else if (response.errorCode === 'others') {
         alert(response.errorMessage);
         return;
       }
@@ -80,10 +80,10 @@ export const chooseImage = (type, action) => {
   launchImageLibrary(options, response => {
     if (response.didCancel) {
       return;
-    } else if (response.errorCode == 'permission') {
+    } else if (response.errorCode === 'permission') {
       alert('Permission not satisfied');
       return;
-    } else if (response.errorCode == 'others') {
+    } else if (response.errorCode === 'others') {
       alert(response.errorMessage);
       return;
     }

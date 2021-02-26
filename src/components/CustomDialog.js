@@ -1,24 +1,24 @@
-import React, {Component} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React from 'react';
+import {View} from 'react-native';
 import Dialog from 'react-native-dialog';
+import {stylesCD} from './Components.css';
 
-class CustomDialog extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <Dialog.Container visible={this.props.isVisible}>
-          <Dialog.Title>{this.props.title}</Dialog.Title>
-          <Dialog.Description>{this.props.description}</Dialog.Description>
-          <Dialog.Button
-            label="Cancel"
-            onPress={() => this.props.visibility()}
-          />
-          {this.props.operations.map(element => (
+const CustomDialog = ({
+  isVisible,
+  title,
+  description,
+  visibility,
+  operations,
+}) => {
+  return (
+    <View style={stylesCD.container}>
+      <Dialog.Container visible={isVisible}>
+        <Dialog.Title>{title}</Dialog.Title>
+        <Dialog.Description>{description}</Dialog.Description>
+        <Dialog.Button label="Cancel" onPress={() => visibility()} />
+        {operations &&
+          operations.length > 0 &&
+          operations.map(element => (
             <Dialog.Button
               key={element.label}
               label={element.label}
@@ -27,19 +27,9 @@ class CustomDialog extends Component {
               }}
             />
           ))}
-        </Dialog.Container>
-      </View>
-    );
-  }
-}
+      </Dialog.Container>
+    </View>
+  );
+};
 
 export default CustomDialog;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

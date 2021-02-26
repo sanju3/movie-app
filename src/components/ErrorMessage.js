@@ -1,27 +1,13 @@
-import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React from 'react';
+import {View, Text} from 'react-native';
+import {stylesEM} from './Components.css';
 
-class ErrorMessage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      error: props.error,
-    };
-  }
-
-  render() {
-    return (
-      <View>
-        <Text style={styles.text}>{this.state.error}</Text>
-      </View>
-    );
-  }
-}
+const ErrorMessage = ({error}) => {
+  return (
+    <View>
+      <Text style={stylesEM.text}>{error}</Text>
+    </View>
+  );
+};
 
 export default ErrorMessage;
-
-const styles = StyleSheet.create({
-  text: {
-    color: 'red',
-  },
-});

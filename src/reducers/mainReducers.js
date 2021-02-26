@@ -46,3 +46,22 @@ export const movieReviewReducer = (state = initialState, action) => {
       return state;
   }
 };
+
+export const authReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case types.LOGIN_REQUEST:
+      return {loading: true};
+    case types.LOGIN_SUCCESS:
+      return {loading: false, data: action.payload};
+    case types.LOGIN_ERROR:
+      return {loading: false, error: action.payload};
+    case types.SIGNUP_REQUEST:
+      return {loading: true};
+    case types.SIGNUP_SUCCESS:
+      return {loading: false, data: action.payload};
+    case types.SIGNUP_ERROR:
+      return {loading: false, error: action.payload};
+    default:
+      return state;
+  }
+};

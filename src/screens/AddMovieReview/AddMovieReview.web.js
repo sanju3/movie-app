@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Button, Image} from 'react-native';
+import {View, Button, Image} from 'react-native';
 import Header from '../../components/Header';
 import InputBox from '../../components/InputBox';
 import {connect} from 'react-redux';
 import {createReview} from '../../actions/mainActions';
+import {stylesWeb} from './AddMovieReview.css';
 
 export class AddMovieReview extends Component {
   constructor(props) {
@@ -67,64 +68,70 @@ export class AddMovieReview extends Component {
   };
 
   render() {
+    const {
+      movieName,
+      movieHeadline,
+      movieSummary,
+      movieByline,
+      moviePublicationDate,
+      imagePath,
+    } = this.state;
+
     return (
-      <View style={styles.root}>
-        <View style={styles.header}>
+      <View style={stylesWeb.root}>
+        <View style={stylesWeb.header}>
           <Header name="Add Movie Review" />
         </View>
-        <View style={styles.container}>
-          <View style={styles.element}>
+        <View style={stylesWeb.container}>
+          <View style={stylesWeb.element}>
             <InputBox
               textTitle="Movie Name"
-              textValue={this.state.movieName}
+              textValue={movieName}
               changeValue={this.changeNameTextHandler}
             />
           </View>
-          <View style={styles.element}>
+          <View style={stylesWeb.element}>
             <InputBox
               textTitle="Movie Headline"
-              textValue={this.state.movieHeadline}
+              textValue={movieHeadline}
               changeValue={this.changeHeadlineTextHandler}
             />
           </View>
-          <View style={styles.element}>
+          <View style={stylesWeb.element}>
             <InputBox
               textTitle="Movie Summary"
-              textValue={this.state.movieSummary}
+              textValue={movieSummary}
               changeValue={this.changeSummaryTextHandler}
             />
           </View>
-          <View style={styles.element}>
+          <View style={stylesWeb.element}>
             <InputBox
               textTitle="Movie By Line"
-              textValue={this.state.movieByline}
+              textValue={movieByline}
               changeValue={this.changeBylineTextHandler}
             />
           </View>
-          <View style={styles.element}>
+          <View style={stylesWeb.element}>
             <InputBox
               textTitle="Movie Publication Date"
-              textValue={this.state.moviePublicationDate}
+              textValue={moviePublicationDate}
               changeValue={this.changePublicationDateTextHandler}
             />
           </View>
-          <View style={styles.element}>
-            {this.state.imagePath ? (
-              <Image
-                style={styles.image}
-                source={{uri: this.state.imagePath}}
-              />
-            ) : null}
+          <View style={stylesWeb.element}>
+            {imagePath && (
+              <Image style={stylesWeb.image} source={{uri: imagePath}} />
+            )}
 
             <input type="file" onChange={this.onFileChange} />
           </View>
-          <View style={styles.element}>
+          <View style={stylesWeb.element}>
             <Button
               title="Add review"
               onPress={() => this.addReviewHandler()}
             />
           </View>
-          <View style={styles.element}>
+          <View style={stylesWeb.element}>
             <Button title="Home" onPress={() => this.props.history.push('/')} />
           </View>
         </View>
@@ -140,31 +147,3 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(null, mapDispatchToProps)(AddMovieReview);
-
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-  },
-
-  header: {
-    height: 40,
-    width: '100%',
-  },
-  container: {
-    margin: 10,
-    width: '40%',
-    alignItems: 'center',
-    padding: 10,
-  },
-  element: {
-    width: '70%',
-    marginBottom: 10,
-  },
-  image: {
-    height: 200,
-    resizeMode: 'contain',
-    marginBottom: 10,
-  },
-});

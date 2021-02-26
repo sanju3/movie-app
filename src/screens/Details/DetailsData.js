@@ -1,23 +1,16 @@
 import React, {Component} from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  Button,
-  Image,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, Image, TextInput, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import {updateReview} from '../../actions/mainActions';
 import CustomDialog from '../../components/CustomDialog';
 import {captureImage, chooseImage} from '../../utils';
+import {styles} from './DetailsData.css';
 
 class DetailsData extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      movie: props.movie,
+      movieS: props.movie,
       updateStatus: false,
       dialogStatus: false,
     };
@@ -25,17 +18,17 @@ class DetailsData extends Component {
 
   changeSummaryTextHandler = text => {
     this.setState({
-      movie: {...this.state.movie, summary_short: text},
+      movieS: {...this.state.movieS, summary_short: text},
     });
   };
   changeBylineTextHandler = text => {
     this.setState({
-      movie: {...this.state.movie, byline: text},
+      movieS: {...this.state.movieS, byline: text},
     });
   };
   changePublicationTextHandler = text => {
     this.setState({
-      movie: {...this.state.movie, publication_date: text},
+      movieS: {...this.state.movieS, publication_date: text},
     });
   };
   changeImageHandler = () => {
@@ -44,29 +37,32 @@ class DetailsData extends Component {
 
   captureImageData = response => {
     this.setState({
-      movie: {...this.state.movie, multimedia: {src: response.uri}},
+      movieS: {...this.state.movieS, multimedia: {src: response.uri}},
       dialogStatus: false,
     });
   };
 
   chooseImageData = response => {
     this.setState({
-      movie: {...this.state.movie, multimedia: {src: response.uri}},
+      movieS: {...this.state.movieS, multimedia: {src: response.uri}},
       dialogStatus: false,
     });
   };
 
   updateReviewHandler = () => {
-    if (JSON.stringify(this.state.movie) === JSON.stringify(this.props.movie)) {
+    if (
+      JSON.stringify(this.state.movieS) === JSON.stringify(this.props.movie)
+    ) {
       alert('Nothing to change');
     } else {
+      const {movieS} = this.state;
       this.props.updateMovie({
         movieName: this.props.movie.display_title,
-        imagePath: this.state.movie.multimedia.src,
-        movieHeadline: this.state.movie.headline,
-        movieSummary: this.state.movie.summary_short,
-        movieByline: this.state.movie.byline,
-        moviePublicationDate: this.state.movie.publication_date,
+        imagePath: movieS.multimedia.src,
+        movieHeadline: movieS.headline,
+        movieSummary: movieS.summary_short,
+        movieByline: movieS.byline,
+        moviePublicationDate: movieS.publication_date,
       });
       alert('Review updated');
       this.setState({
@@ -76,9 +72,11 @@ class DetailsData extends Component {
     }
   };
   render() {
+    const {dialogStatus, movieS, updateStatus} = this.state;
+    const {movie} = this.props;
     return (
       <View style={styles.root}>
-        {this.state.dialogStatus ? (
+        {dialogStatus && (
           <CustomDialog
             title="Edit image"
             description="Choose your preffered method"
@@ -96,63 +94,59 @@ class DetailsData extends Component {
                 label: 'Gallery',
               },
             ]}
-            visibility={() =>
-              this.setState({dialogStatus: !this.state.dialogStatus})
-            }
-            isVisible={this.state.dialogStatus}
+            visibility={() => this.setState({dialogStatus: !dialogStatus})}
+            isVisible={dialogStatus}
           />
-        ) : null}
+        )}
         <View style={styles.container}>
           <View style={styles.title}>
-            <Text>{this.props.movie.display_title}</Text>
+            <Text>{movie.display_title}</Text>
           </View>
           <View style={styles.imageContainer}>
-            {!this.state.updateStatus ? (
+            {!updateStatus ? (
               <Image
                 style={styles.image}
-                source={{uri: this.props.movie.multimedia.src}}
+                source={{uri: movie.multimedia.src}}
               />
             ) : (
               <TouchableOpacity onPress={() => this.changeImageHandler()}>
                 <Image
                   style={styles.image}
-                  source={{uri: this.state.movie.multimedia.src}}
+                  source={{uri: movieS.multimedia.src}}
                 />
               </TouchableOpacity>
             )}
           </View>
           <View style={styles.summary}>
-            {!this.state.updateStatus ? (
-              <Text>{this.props.movie.summary_short}</Text>
+            {!updateStatus ? (
+              <Text>{movie.summary_short}</Text>
             ) : (
               <TextInput
                 multiline={true}
                 style={styles.input}
-                value={this.state.movie.summary_short}
+                value={movieS.summary_short}
                 onChangeText={this.changeSummaryTextHandler}
               />
             )}
           </View>
           <View style={styles.byline}>
-            {!this.state.updateStatus ? (
-              <Text>{'By Line: ' + this.props.movie.byline}</Text>
+            {!updateStatus ? (
+              <Text>{'By Line: ' + movie.byline}</Text>
             ) : (
               <TextInput
                 style={styles.input}
-                value={this.state.movie.byline}
+                value={movieS.byline}
                 onChangeText={this.changeBylineTextHandler}
               />
             )}
           </View>
           <View style={styles.publicationDate}>
-            {!this.state.updateStatus ? (
-              <Text>
-                {'Publication Date: ' + this.props.movie.publication_date}
-              </Text>
+            {!updateStatus ? (
+              <Text>{'Publication Date: ' + movie.publication_date}</Text>
             ) : (
               <TextInput
                 style={styles.input}
-                value={this.state.movie.publication_date}
+                value={movieS.publication_date}
                 onChangeText={this.changePublicationTextHandler}
               />
             )}
@@ -164,21 +158,19 @@ class DetailsData extends Component {
               <Text style={styles.text}>Home</Text>
             </TouchableOpacity>
             <Text> </Text>
-            {this.state.updateStatus ? (
+            {updateStatus && (
               <TouchableOpacity
                 style={styles.primaryButton}
                 onPress={() => this.updateReviewHandler()}>
                 <Text style={styles.text}>Update</Text>
               </TouchableOpacity>
-            ) : null}
+            )}
             <Text> </Text>
             <TouchableOpacity
               style={styles.primaryButton}
-              onPress={() =>
-                this.setState({updateStatus: !this.state.updateStatus})
-              }>
+              onPress={() => this.setState({updateStatus: !updateStatus})}>
               <Text style={styles.text}>
-                {!this.state.updateStatus ? 'Edit details' : 'Cancel edit'}
+                {!updateStatus ? 'Edit details' : 'Cancel edit'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -195,56 +187,3 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(null, mapDispatchToProps)(DetailsData);
-
-const styles = StyleSheet.create({
-  root: {
-    backgroundColor: '#fff',
-  },
-  container: {
-    margin: 10,
-    height: 700,
-  },
-  primaryButton: {
-    backgroundColor: '#419cd1',
-    padding: 10,
-    borderRadius: 5,
-    width: '30%',
-    alignItems: 'center',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-  title: {
-    paddingVertical: 10,
-    alignItems: 'center',
-    width: '100%',
-  },
-  input: {
-    width: '100%',
-    borderColor: 'grey',
-    borderWidth: 1,
-    borderRadius: 5,
-  },
-  imageContainer: {
-    height: '30%',
-    marginBottom: 10,
-  },
-  summary: {
-    marginBottom: 10,
-  },
-  byline: {
-    marginBottom: 10,
-  },
-  publicationDate: {
-    marginBottom: 10,
-  },
-  buttons: {
-    flexDirection: 'row',
-    width: '90%',
-    justifyContent: 'flex-start',
-  },
-  text: {
-    color: 'white',
-  },
-});

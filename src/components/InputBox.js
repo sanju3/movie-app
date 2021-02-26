@@ -1,41 +1,23 @@
 import React from 'react';
-import {Text, View, TextInput, StyleSheet} from 'react-native';
+import {Text, View, TextInput} from 'react-native';
+import {stylesIB} from './Components.css';
 
-class InputBox extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.textField}>
-          <Text style={styles.upText}>
-            {this.props.textTitle} <Text style={styles.textColor}>*</Text>{' '}
-          </Text>
+const InputBox = ({textTitle, textValue, changeValue, secure}) => {
+  return (
+    <View style={stylesIB.container}>
+      <View style={stylesIB.textField}>
+        <Text style={stylesIB.upText}>
+          {textTitle} <Text style={stylesIB.textColor}>*</Text>{' '}
+        </Text>
 
-          <TextInput
-            value={this.props.textValue}
-            onChangeText={text => this.props.changeValue(text)}
-          />
-        </View>
+        <TextInput
+          secureTextEntry={secure || false}
+          value={textValue}
+          onChangeText={text => changeValue(text)}
+        />
       </View>
-    );
-  }
-}
+    </View>
+  );
+};
 
 export default InputBox;
-
-const styles = StyleSheet.create({
-  container: {
-    borderColor: 'grey',
-    borderWidth: 1,
-    padding: 5,
-    borderRadius: 5,
-  },
-  textField: {
-    width: '100%',
-  },
-  upText: {
-    color: 'grey',
-    fontSize: 10,
-    fontWeight: 'bold',
-  },
-  textColor: {color: 'red'},
-});
