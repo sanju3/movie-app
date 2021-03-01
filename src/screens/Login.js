@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, TouchableOpacity, Text, Platform} from 'react-native';
+import {View, TouchableOpacity, Text} from 'react-native';
 import Header from '../components/Header';
 import InputBox from '../components/InputBox';
 import {connect} from 'react-redux';

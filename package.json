@@ -23,6 +23,7 @@
     "bootstrap": "^4.6.0",
     "light-toast": "^0.3.0",
     "react": "^17.0.1",
+    "react-confirm-alert": "^2.7.0",
     "react-dom": "^17.0.1",
     "react-images-upload": "^1.2.8",
     "react-native": "^0.63.3",

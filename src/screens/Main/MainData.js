@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View} from 'react-native';
 import CustomCard from '../../components/CustomCard/CustomCard';
 import ErrorMessage from '../../components/ErrorMessage';
 import Loader from '../../components/Loader/Loader';

@@ -1,10 +1,29 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Image, Text, TouchableOpacity} from 'react-native';
+import CustomDialog from '../CustomDialog';
 import styles from './CustomCard.css';
 
 const CustomCard = ({movie, history, deleteR}) => {
+  const [dialogStatus, setDialogStatus] = useState(false);
+  const [toDelete, setToDelete] = useState('');
+
   return (
     <View style={styles.root}>
+      {dialogStatus && (
+        <CustomDialog
+          title="Delete a review"
+          description="Are you sure?"
+          operations={[
+            {
+              method: deleteR,
+              data: toDelete,
+              label: 'Delete',
+            },
+          ]}
+          visibility={() => setDialogStatus(!dialogStatus)}
+          isVisible={dialogStatus}
+        />
+      )}
       <View style={styles.container}>
         <View style={styles.title}>
           <Text>{movie.display_title}</Text>
@@ -30,7 +49,8 @@ const CustomCard = ({movie, history, deleteR}) => {
           <TouchableOpacity
             style={styles.dangerButton}
             onPress={() => {
-              deleteR(movie.display_title);
+              setToDelete(movie.display_title);
+              setDialogStatus(true);
             }}>
             <Text style={styles.text}>Delete</Text>
           </TouchableOpacity>
