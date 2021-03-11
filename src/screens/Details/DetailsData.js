@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 import {View, Text, Image, TextInput, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import {updateReview} from '../../actions/mainActions';
-import CustomDialog from '../../components/CustomDialog';
-import {captureImage, chooseImage} from '../../utils';
 import {styles} from './DetailsData.css';
+import ImagePickerContainer from '../../components/imagePickerContainer/ImagePickerContainer';
 
 class DetailsData extends Component {
   constructor(props) {
@@ -12,7 +11,6 @@ class DetailsData extends Component {
     this.state = {
       movieS: props.movie,
       updateStatus: false,
-      dialogStatus: false,
     };
   }
 
@@ -35,17 +33,9 @@ class DetailsData extends Component {
     this.setState({dialogStatus: true});
   };
 
-  captureImageData = response => {
+  imageDataHandler = response => {
     this.setState({
-      movieS: {...this.state.movieS, multimedia: {src: response.uri}},
-      dialogStatus: false,
-    });
-  };
-
-  chooseImageData = response => {
-    this.setState({
-      movieS: {...this.state.movieS, multimedia: {src: response.uri}},
-      dialogStatus: false,
+      movieS: {...this.state.movieS, multimedia: {src: response}},
     });
   };
 
@@ -72,32 +62,10 @@ class DetailsData extends Component {
     }
   };
   render() {
-    const {dialogStatus, movieS, updateStatus} = this.state;
+    const {movieS, updateStatus} = this.state;
     const {movie} = this.props;
     return (
       <View style={styles.root}>
-        {dialogStatus && (
-          <CustomDialog
-            title="Edit image"
-            description="Choose your preffered method"
-            operations={[
-              {
-                method: captureImage,
-                operation: this.captureImageData,
-                data: 'photo',
-                label: 'Camera',
-              },
-              {
-                method: chooseImage,
-                operation: this.chooseImageData,
-                data: 'photo',
-                label: 'Gallery',
-              },
-            ]}
-            visibility={() => this.setState({dialogStatus: !dialogStatus})}
-            isVisible={dialogStatus}
-          />
-        )}
         <View style={styles.container}>
           <View style={styles.title}>
             <Text>{movie.display_title}</Text>
@@ -109,12 +77,10 @@ class DetailsData extends Component {
                 source={{uri: movie.multimedia.src}}
               />
             ) : (
-              <TouchableOpacity onPress={() => this.changeImageHandler()}>
-                <Image
-                  style={styles.image}
-                  source={{uri: movieS.multimedia.src}}
-                />
-              </TouchableOpacity>
+              <Image
+                style={styles.image}
+                source={{uri: movieS.multimedia.src}}
+              />
             )}
           </View>
           <View style={styles.summary}>
@@ -165,6 +131,7 @@ class DetailsData extends Component {
                 <Text style={styles.text}>Update</Text>
               </TouchableOpacity>
             )}
+
             <Text> </Text>
             <TouchableOpacity
               style={styles.primaryButton}
@@ -174,6 +141,9 @@ class DetailsData extends Component {
               </Text>
             </TouchableOpacity>
           </View>
+          {updateStatus && (
+            <ImagePickerContainer handleImagePicker={this.imageDataHandler} />
+          )}
         </View>
       </View>
     );

@@ -64,7 +64,7 @@ export const captureImage = async (type, action) => {
         alert(response.errorMessage);
         return;
       }
-      action(response);
+      action(response.uri);
     });
   }
 };
@@ -87,6 +87,6 @@ export const chooseImage = (type, action) => {
       alert(response.errorMessage);
       return;
     }
-    action(response);
+    action(response.uri);
   });
 };

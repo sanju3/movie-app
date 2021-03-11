@@ -1,18 +1,18 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, Image, Button, ScrollView} from 'react-native';
+import {View, Text, Image, Button, ScrollView} from 'react-native';
 import Header from '../../components/Header';
 import {connect} from 'react-redux';
 import InputBox from '../../components/InputBox';
 import {createReview} from '../../actions/mainActions';
-import {captureImage, chooseImage} from '../../utils';
 import {styles} from './AddMovieReview.css';
+import ImagePickerContainer from '../../components/imagePickerContainer/ImagePickerContainer';
 
 class AddMovieReview extends Component {
   constructor(props) {
     super(props);
     this.state = {
       movieName: '',
-      imagePath: {},
+      imagePath: '',
       movieSummary: '',
       movieByline: '',
       moviePublicationDate: '',
@@ -20,11 +20,7 @@ class AddMovieReview extends Component {
     };
   }
 
-  captureImageData = response => {
-    this.setState({imagePath: response});
-  };
-
-  chooseImageData = response => {
+  imageDataHandler = response => {
     this.setState({imagePath: response});
   };
 
@@ -54,12 +50,12 @@ class AddMovieReview extends Component {
       )
     ) {
       alert('Fill all the Fields');
-    } else if (!this.state.imagePath.uri) {
+    } else if (!this.state.imagePath) {
       alert('Capture or insert an image');
     } else {
       this.props.insertMovie({
         movieName: this.state.movieName,
-        imagePath: this.state.imagePath.uri,
+        imagePath: this.state.imagePath,
         movieSummary: this.state.movieSummary,
         movieByline: this.state.movieByline,
         moviePublicationDate: this.state.moviePublicationDate,
@@ -119,30 +115,20 @@ class AddMovieReview extends Component {
                 changeValue={this.changePublicationDateTextHandler}
               />
             </View>
-            {imagePath.uri && (
+            {imagePath !== '' && (
               <View style={styles.element}>
-                <Image
-                  source={{uri: imagePath.uri}}
-                  style={styles.imageStyle}
-                />
+                <Image source={{uri: imagePath}} style={styles.imageStyle} />
               </View>
             )}
-            <View style={styles.elementButtons}>
-              <Button
-                title="Capture Image"
-                onPress={() => captureImage('photo', this.captureImageData)}
-              />
-
-              <Button
-                title="Choose Image"
-                onPress={() => chooseImage('photo', this.chooseImageData)}
-              />
-
+            <View style={styles.element}>
+              <ImagePickerContainer handleImagePicker={this.imageDataHandler} />
+            </View>
+            <View style={styles.element}>
               <Button
                 title="Clear Image"
                 onPress={() =>
                   this.setState({
-                    imagePath: {},
+                    imagePath: '',
                   })
                 }
               />
